@@ -8,6 +8,7 @@ import (
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
     "golang.org/x/image/math/fixed"
+	"github.com/eiannone/keyboard"
 )
 
 const color_channel  int = 4
@@ -24,10 +25,31 @@ func main() {
 	for y:=0; y<1000; y++ {
 		fbframe.Set(10, y, color.NRGBA{255, 128, 128, 0})
 	}
-	putString(10, 100, "Hello, World !!!")
 
 
-	Display_fb_2_devfb()
+	//test
+	if err := keyboard.Open(); err != nil {
+		panic(err)
+	}
+	defer func() {
+		_ = keyboard.Close()
+	}()
+
+	fmt.Println("Press ESC to quit")
+
+	for xcursor:=10; ; {
+		char, key, err := keyboard.GetKey()
+		if err != nil {
+			panic(err)
+		}
+		putString(xcursor, 100, string(char))
+		xcursor += 7
+		Display_fb_2_devfb()
+
+		if key == keyboard.KeyCtrlZ {
+			break
+		}
+	}
 }
 
 
