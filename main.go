@@ -1,10 +1,13 @@
 package main
 
 import (
+	"os"
 	"fmt"
 	"image"
 	"image/color"
-	"os"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/basicfont"
+    "golang.org/x/image/math/fixed"
 )
 
 const color_channel  int = 4
@@ -20,8 +23,10 @@ func main() {
 
 	for y:=0; y<1000; y++ {
 		fbframe.Set(10, y, color.NRGBA{255, 128, 128, 0})
-
 	}
+	putString(10, 100, "Hello, World !!!")
+
+
 	Display_fb_2_devfb()
 }
 
@@ -63,3 +68,18 @@ func Display_fb_2_devfb(){
 	}
 	
 }
+
+//func putString(img *image.NRGBA, x, y int, label string) {
+func putString(x, y int, label string) {
+    col := color.NRGBA{200, 100, 0, 255}
+    point := fixed.Point26_6{fixed.I(x), fixed.I(y)}
+
+    d := &font.Drawer{
+        Dst:  fbframe,
+        Src:  image.NewUniform(col),
+        Face: basicfont.Face7x13,
+        Dot:  point,
+    }
+    d.DrawString(label)
+}
+
